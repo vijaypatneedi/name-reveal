@@ -4,44 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Scratch Card Name Reveal</title>
-<style>
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #fafafa;
-    font-family: Arial, sans-serif;
-  }
-  #container {
-    position: relative;
-    width: 300px;
-    height: 200px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    overflow: hidden;
-    border-radius: 12px;
-  }
-  #message {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #ffd700, #ff8c00);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-    z-index: 1; /* below the scratch layer */
-  }
-  #scratchCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2; /* on top to hide the name initially */
-    cursor: crosshair;
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -50,68 +13,7 @@
   <canvas id="scratchCanvas" width="300" height="200"></canvas>
 </div>
 
-<script>
-  const canvas = document.getElementById("scratchCanvas");
-  const ctx = canvas.getContext("2d");
-
-  // Fill the canvas with a solid color (fallback cover)
-  ctx.fillStyle = "#888"; // grey color
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Optional: load a cover image instead of solid color
-  const coverImage = new Image();
-  coverImage.src = "https://via.placeholder.com/300x200/888888/ffffff?text=Scratch+Here";
-  
-  coverImage.onload = () => {
-    ctx.drawImage(coverImage, 0, 0, canvas.width, canvas.height);
-  };
-
-  // Set composite mode to erase instead of draw
-  ctx.globalCompositeOperation = "destination-out";
-
-  let isDrawing = false;
-
-  function getPointerPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top
-    };
-  }
-
-  function startDrawing(e) {
-    isDrawing = true;
-    scratch(e);
-  }
-
-  function endDrawing() {
-    isDrawing = false;
-    ctx.beginPath();
-  }
-
-  function scratch(e) {
-    if (!isDrawing) return;
-    const pos = getPointerPos(e);
-    ctx.beginPath();
-    ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // Mouse events
-  canvas.addEventListener("mousedown", startDrawing);
-  canvas.addEventListener("mouseup", endDrawing);
-  canvas.addEventListener("mousemove", scratch);
-
-  // Touch events
-  canvas.addEventListener("touchstart", startDrawing);
-  canvas.addEventListener("touchend", endDrawing);
-  canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
-    scratch(e);
-  });
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
