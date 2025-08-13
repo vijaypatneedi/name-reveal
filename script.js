@@ -88,11 +88,13 @@ let isDrawing = false;
 let scratchedPixels = 0;
 let totalPixels = canvas.width * canvas.height;
 let isRevealed = false;
+let lastScratchTime = 0;
+let scratchCooldown = 50; // Minimum time between scratch calculations (ms)
 
-// Function to check if 75% is scratched
+// Function to check if 99% is scratched
 function checkProgress() {
   const progress = scratchedPixels / totalPixels;
-  if (progress >= 0.75 && !isRevealed) {
+  if (progress >= 0.99 && !isRevealed) {
     revealComplete();
   }
 }
@@ -108,7 +110,7 @@ function revealComplete() {
   // Trigger party popper animation
   createPartyPopper();
   
-  console.log("🎉 75% scratched! Complete name revealed!");
+  console.log("🎉 99% scratched! Complete name revealed!");
 }
 
 // Party popper animation
@@ -177,12 +179,30 @@ function endDrawing() {
 
 function scratch(e) {
   if (!isDrawing || isRevealed) return;
+  
+  const currentTime = Date.now();
+  if (currentTime - lastScratchTime < scratchCooldown) {
+    // Skip progress calculation if scratching too fast
+    return;
+  }
+  
   const pos = getPointerPos(e);
   
-  // Calculate how many pixels we're scratching
+  // Calculate actual scratched area more accurately
   const radius = 20;
   const area = Math.PI * radius * radius;
-  scratchedPixels += area;
+  
+  // Only add area if we haven't scratched this exact position recently
+  const scratchKey = `${Math.floor(pos.x / 10)},${Math.floor(pos.y / 10)}`;
+  if (!window.scratchedPositions) {
+    window.scratchedPositions = new Set();
+  }
+  
+  if (!window.scratchedPositions.has(scratchKey)) {
+    window.scratchedPositions.add(scratchKey);
+    scratchedPixels += area;
+    lastScratchTime = currentTime;
+  }
   
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
