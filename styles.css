@@ -61,3 +61,51 @@ body {
   z-index: 2; /* on top to hide the name initially */
   cursor: crosshair;
 }
+
+/* Confetti animation - more realistic party popper style */
+.confetti {
+  position: fixed;
+  z-index: 1000;
+  animation: confetti-fall 5s linear forwards;
+  border-radius: 2px;
+}
+
+.confetti-circle {
+  border-radius: 50%;
+}
+
+.confetti-square {
+  border-radius: 0;
+}
+
+.confetti-triangle {
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid currentColor;
+  background-color: transparent !important;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(25vh) rotate(180deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(50vh) rotate(360deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(75vh) rotate(540deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
