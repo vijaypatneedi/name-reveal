@@ -23,7 +23,7 @@ body {
   
   #container {
     width: 280px;
-    height: 180px;
+    height: 130px;
   }
   
   #message {
@@ -34,7 +34,7 @@ body {
 #container {
   position: relative;
   width: 300px;
-  height: 200px;
+  height: 100px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   overflow: hidden;
   border-radius: 12px;
