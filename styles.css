@@ -2,6 +2,7 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
+  min-height: 100vh;
   height: 100vh;
   background: url('arhant-daivik.jpeg') center center / cover no-repeat;
   background-attachment: fixed;
@@ -9,6 +10,25 @@ body {
   margin: 0;
   padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+    height: 100vh;
+    min-height: 100vh;
+  }
+  
+  #container {
+    width: 280px;
+    height: 180px;
+  }
+  
+  #message {
+    font-size: 24px;
+  }
 }
 
 #container {
