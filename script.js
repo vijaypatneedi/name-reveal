@@ -105,7 +105,7 @@ function revealComplete() {
   // Enable swipe navigation after celebration
   setTimeout(() => {
     enableSwipeNavigation();
-  }, 3000);
+  }, 6000);
   
   console.log("🎉 99% scratched! Complete name revealed!");
 }
@@ -139,7 +139,7 @@ function createPartyPopper() {
       // Random rotation and animation delays
       confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
       confetti.style.animationDelay = Math.random() * 2 + "s";
-      confetti.style.animationDuration = (Math.random() * 2 + 3) + "s";
+      confetti.style.animationDuration = (Math.random() * 2 + 4) + "s";
       
       // Add to body so it falls from top of image
       document.body.appendChild(confetti);
@@ -149,7 +149,7 @@ function createPartyPopper() {
         if (confetti.parentNode) {
           confetti.parentNode.removeChild(confetti);
         }
-      }, 6000);
+      }, 8000);
     }, i * 80);
   }
 }

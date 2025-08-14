@@ -130,7 +130,7 @@ body {
 .confetti {
   position: fixed;
   z-index: 1000;
-  animation: confetti-fall 5s linear forwards;
+  animation: confetti-fall 8s linear forwards;
   border-radius: 2px;
 }
 
