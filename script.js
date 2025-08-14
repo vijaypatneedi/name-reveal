@@ -73,14 +73,6 @@ window.addEventListener('resize', () => {
 ctx.fillStyle = "#888"; // grey color
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Optional: load a cover image instead of solid color
-const coverImage = new Image();
-coverImage.src = "https://via.placeholder.com/300x200/888888/ffffff?text=Scratch+Here";
-
-coverImage.onload = () => {
-  ctx.drawImage(coverImage, 0, 0, canvas.width, canvas.height);
-};
-
 // Set composite mode to erase instead of draw
 ctx.globalCompositeOperation = "destination-out";
 
@@ -195,18 +187,7 @@ function enableSwipeNavigation() {
   
   console.log('🔄 Swipe navigation enabled with dots only');
   
-  // Debug: Check page dimensions
-  setTimeout(() => {
-    const namePage = swipeWrapper.querySelector('.name-page');
-    const invitePage = swipeWrapper.querySelector('.invite-page');
-    const wrapper = swipeWrapper;
-    
-    console.log('📏 Wrapper dimensions:', wrapper.getBoundingClientRect());
-    console.log('📏 Name page dimensions:', namePage?.getBoundingClientRect());
-    console.log('📏 Invite page dimensions:', invitePage?.getBoundingClientRect());
-    console.log('📏 Name page styles:', window.getComputedStyle(namePage));
-    console.log('📏 Invite page styles:', window.getComputedStyle(invitePage));
-  }, 100);
+
   
   // Add swipe event listeners to the entire page
   document.addEventListener('touchstart', handleTouchStart, { passive: false });
@@ -311,15 +292,6 @@ function updateCardPosition() {
   });
 }
 
-function updatePagePosition() {
-  const deltaX = currentX - startX;
-  const pages = document.querySelectorAll('.swipe-page');
-  
-  pages.forEach(page => {
-    page.style.transform = `translateX(${deltaX * 0.3}px)`;
-  });
-}
-
 function resetPagePosition() {
   const pages = document.querySelectorAll('.swipe-page');
   pages.forEach(page => {
@@ -332,15 +304,17 @@ function switchPage(targetPage) {
   const pages = document.querySelectorAll('.swipe-page');
   const indicators = document.querySelectorAll('.indicator-dot');
   
+  // Hide all pages
   pages.forEach(page => {
     page.classList.remove('active');
   });
   
+  // Remove active from all indicators
   indicators.forEach(indicator => {
     indicator.classList.remove('active');
   });
   
-  // Find the correct page and activate it
+  // Show target page
   const targetPageElement = document.querySelector(`.${targetPage}-page`);
   const targetIndicator = document.querySelector(`[data-page="${targetPage}"]`);
   
@@ -359,14 +333,6 @@ function switchPage(targetPage) {
   }
   
   console.log(`🔄 Switched to ${targetPage} page`);
-  
-  // Debug: Show current page state
-  const allPages = document.querySelectorAll('.swipe-page');
-  allPages.forEach((page, index) => {
-    const isActive = page.classList.contains('active');
-    const pageType = page.classList.contains('name-page') ? 'name' : 'invite';
-    console.log(`📄 Page ${index + 1} (${pageType}): active = ${isActive}`);
-  });
 }
 
 function getPointerPos(e) {
