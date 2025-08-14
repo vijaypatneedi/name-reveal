@@ -110,6 +110,11 @@ function revealComplete() {
   // Trigger party popper animation
   createPartyPopper();
   
+  // Enable swipe navigation after celebration
+  setTimeout(() => {
+    enableSwipeNavigation();
+  }, 3000);
+  
   console.log("🎉 99% scratched! Complete name revealed!");
 }
 
@@ -155,6 +160,168 @@ function createPartyPopper() {
       }, 6000);
     }, i * 80);
   }
+}
+
+// Swipe navigation system
+let currentCard = 'name'; // 'name' or 'invite'
+let startX = 0;
+let startY = 0;
+let currentX = 0;
+let currentY = 0;
+let isDragging = false;
+
+function enableSwipeNavigation() {
+  // Create swipeable page system
+  const swipeWrapper = document.createElement('div');
+  swipeWrapper.className = 'swipe-wrapper';
+  swipeWrapper.innerHTML = `
+    <div class="swipe-page name-page active">
+      <div class="name-header">
+        <h1>Arhant Daivik 🎉</h1>
+      </div>
+      <div class="swipe-hint left-hint">
+        <span class="hint-arrow">&lt;</span>
+      </div>
+    </div>
+    <div class="swipe-page invite-page">
+      <div class="swipe-hint right-hint">
+        <span class="hint-arrow">&gt;</span>
+      </div>
+    </div>
+    <div class="swipe-indicator">
+      <span class="indicator-dot active" data-page="name"></span>
+      <span class="indicator-dot" data-page="invite"></span>
+    </div>
+  `;
+  
+  document.body.appendChild(swipeWrapper);
+  
+  // Add swipe event listeners to the entire page
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchend', handleTouchEnd, { passive: false });
+  
+  document.addEventListener('mousedown', handleMouseStart);
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseEnd);
+  document.addEventListener('mouseleave', handleMouseEnd);
+  
+  // Click indicators to switch pages
+  const indicators = swipeWrapper.querySelectorAll('.indicator-dot');
+  indicators.forEach(indicator => {
+    indicator.addEventListener('click', () => {
+      const targetPage = indicator.dataset.page;
+      switchPage(targetPage);
+    });
+  });
+  
+  console.log("🔄 Full page swipe navigation enabled!");
+}
+
+function handleTouchStart(e) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  startX = touch.clientX;
+  startY = touch.clientY;
+  isDragging = true;
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+  if (!isDragging) return;
+  
+  const touch = e.touches[0];
+  currentX = touch.clientX;
+  currentY = touch.clientY;
+  
+  updateCardPosition();
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  if (!isDragging) return;
+  
+  const deltaX = currentX - startX;
+  const deltaY = currentY - startY;
+  
+  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+    if (deltaX > 0 && currentCard === 'name') {
+      switchPage('invite');
+    } else if (deltaX < 0 && currentCard === 'invite') {
+      switchPage('name');
+    }
+  }
+  
+  isDragging = false;
+  resetPagePosition();
+}
+
+function handleMouseStart(e) {
+  startX = e.clientX;
+  startY = e.clientY;
+  isDragging = true;
+}
+
+function handleMouseMove(e) {
+  if (!isDragging) return;
+  
+  currentX = e.clientX;
+  currentY = e.clientY;
+  
+  updateCardPosition();
+}
+
+function handleMouseEnd(e) {
+  if (!isDragging) return;
+  
+  const deltaX = currentX - startX;
+  const deltaY = currentY - startY;
+  
+  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+    if (deltaX > 0 && currentCard === 'name') {
+      switchPage('invite');
+    } else if (deltaX < 0 && currentCard === 'invite') {
+      switchPage('name');
+    }
+  }
+  
+  isDragging = false;
+  resetPagePosition();
+}
+
+function updatePagePosition() {
+  const deltaX = currentX - startX;
+  const pages = document.querySelectorAll('.swipe-page');
+  
+  pages.forEach(page => {
+    page.style.transform = `translateX(${deltaX * 0.3}px)`;
+  });
+}
+
+function resetPagePosition() {
+  const pages = document.querySelectorAll('.swipe-page');
+  pages.forEach(page => {
+    page.style.transform = 'translateX(0)';
+  });
+}
+
+function switchPage(targetPage) {
+  currentCard = targetPage;
+  const pages = document.querySelectorAll('.swipe-page');
+  const indicators = document.querySelectorAll('.indicator-dot');
+  
+  pages.forEach(page => {
+    page.classList.remove('active');
+  });
+  
+  indicators.forEach(indicator => {
+    indicator.classList.remove('active');
+  });
+  
+  document.querySelector(`.${targetPage}-page`).classList.add('active');
+  document.querySelector(`[data-page="${targetPage}"]`).classList.add('active');
+  
+  console.log(`🔄 Switched to ${targetPage} page`);
 }
 
 function getPointerPos(e) {
