@@ -179,13 +179,10 @@ function enableSwipeNavigation() {
       <div class="name-header">
         <h1>Arhant Daivik 🎉</h1>
       </div>
-      <div class="swipe-hint left-hint">
-        <span class="hint-arrow">&lt;</span>
-      </div>
     </div>
     <div class="swipe-page invite-page">
-      <div class="swipe-hint right-hint">
-        <span class="hint-arrow">&gt;</span>
+      <div class="invite-content">
+        <img src="cradle-invite.jpeg" alt="Cradle Invitation" onload="console.log('🖼️ Invite image loaded successfully')" onerror="console.error('❌ Failed to load invite image')">
       </div>
     </div>
     <div class="swipe-indicator">
@@ -195,6 +192,21 @@ function enableSwipeNavigation() {
   `;
   
   document.body.appendChild(swipeWrapper);
+  
+  console.log('🔄 Swipe navigation enabled with dots only');
+  
+  // Debug: Check page dimensions
+  setTimeout(() => {
+    const namePage = swipeWrapper.querySelector('.name-page');
+    const invitePage = swipeWrapper.querySelector('.invite-page');
+    const wrapper = swipeWrapper;
+    
+    console.log('📏 Wrapper dimensions:', wrapper.getBoundingClientRect());
+    console.log('📏 Name page dimensions:', namePage?.getBoundingClientRect());
+    console.log('📏 Invite page dimensions:', invitePage?.getBoundingClientRect());
+    console.log('📏 Name page styles:', window.getComputedStyle(namePage));
+    console.log('📏 Invite page styles:', window.getComputedStyle(invitePage));
+  }, 100);
   
   // Add swipe event listeners to the entire page
   document.addEventListener('touchstart', handleTouchStart, { passive: false });
@@ -211,6 +223,7 @@ function enableSwipeNavigation() {
   indicators.forEach(indicator => {
     indicator.addEventListener('click', () => {
       const targetPage = indicator.dataset.page;
+      console.log(`🔄 Indicator clicked for page: ${targetPage}`);
       switchPage(targetPage);
     });
   });
@@ -289,6 +302,15 @@ function handleMouseEnd(e) {
   resetPagePosition();
 }
 
+function updateCardPosition() {
+  const deltaX = currentX - startX;
+  const pages = document.querySelectorAll('.swipe-page');
+  
+  pages.forEach(page => {
+    page.style.transform = `translateX(${deltaX * 0.3}px)`;
+  });
+}
+
 function updatePagePosition() {
   const deltaX = currentX - startX;
   const pages = document.querySelectorAll('.swipe-page');
@@ -318,10 +340,33 @@ function switchPage(targetPage) {
     indicator.classList.remove('active');
   });
   
-  document.querySelector(`.${targetPage}-page`).classList.add('active');
-  document.querySelector(`[data-page="${targetPage}"]`).classList.add('active');
+  // Find the correct page and activate it
+  const targetPageElement = document.querySelector(`.${targetPage}-page`);
+  const targetIndicator = document.querySelector(`[data-page="${targetPage}"]`);
+  
+  if (targetPageElement) {
+    targetPageElement.classList.add('active');
+    console.log(`🔄 Activated ${targetPage} page element`);
+  } else {
+    console.error(`❌ Could not find ${targetPage}-page element`);
+  }
+  
+  if (targetIndicator) {
+    targetIndicator.classList.add('active');
+    console.log(`🔄 Activated ${targetPage} indicator`);
+  } else {
+    console.error(`❌ Could not find ${targetPage} indicator`);
+  }
   
   console.log(`🔄 Switched to ${targetPage} page`);
+  
+  // Debug: Show current page state
+  const allPages = document.querySelectorAll('.swipe-page');
+  allPages.forEach((page, index) => {
+    const isActive = page.classList.contains('active');
+    const pageType = page.classList.contains('name-page') ? 'name' : 'invite';
+    console.log(`📄 Page ${index + 1} (${pageType}): active = ${isActive}`);
+  });
 }
 
 function getPointerPos(e) {
